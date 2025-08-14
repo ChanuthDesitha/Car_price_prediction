@@ -1,5 +1,6 @@
 import joblib
 
+MODEL_PATH = "models/xgboost_model.pkl"
 MODEL_PATH = "models/random_forest_model.pkl"
 ENCODERS_PATH = "models/encoders.pkl"
 
