@@ -37,23 +37,23 @@ function updateSummary() {
 form.addEventListener('input', updateSummary);
 form.addEventListener('change', updateSummary);
 
-// predictBtn.addEventListener('click', function () {
-//   this.classList.add('loading');
-//   this.textContent = '';
+predictBtn.addEventListener('click', function () {
+  this.classList.add('loading');
+  this.textContent = '';
 
-//   setTimeout(() => {
-//     const randomPrice = Math.floor(Math.random() * 50000) + 10000;
-//     resultBox.innerHTML = `
-//           <h3 style="color: black;">Estimated Price</h3>
-//           <div style="font-size: 2rem; font-weight: bold; color: #28a745;">$${randomPrice.toLocaleString()}</div>
-//           <p style="font-size: 0.9rem; opacity: 0.8;">*Price estimate based on current market conditions</p>
-//         `;
-//     resultBox.style.display = 'block';
-//     this.classList.remove('loading');
-//     this.textContent = 'Predict Price';
-//     resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-//   }, 2000);
-// });
+  setTimeout(() => {
+    const randomPrice = Math.floor(Math.random() * 50000) + 10000;
+    resultBox.innerHTML = `
+          <h3 style="color: black;">Estimated Price</h3>
+          <div style="font-size: 2rem; font-weight: bold; color: #28a745;">$${randomPrice.toLocaleString()}</div>
+          <p style="font-size: 0.9rem; opacity: 0.8;">*Price estimate based on current market conditions</p>
+        `;
+    resultBox.style.display = 'block';
+    this.classList.remove('loading');
+    this.textContent = 'Predict Price';
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 2000);
+});
 
 function clearAll() {
   const form = document.getElementById("vehicleForm");
@@ -73,6 +73,44 @@ function clearAll() {
     <p id="resultContent"></p>
   `;
 }
+
+// Listen for changes on the form and update the summary box
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('vehicleForm');
+  const summaryContent = document.getElementById('summaryContent');
+
+  function updateSummary() {
+    const model = document.getElementById('model').value;
+    const type = document.getElementById('type').value;
+    const motormotorCapacity = document.getElementById('motormotorCapacity').value;
+    const motorTypes = document.getElementById('motorTypes').value;
+    const color = document.getElementById('color').value;
+    const condition = document.getElementById('condition').value;
+    const year = document.getElementById('year').value;
+    const mileage = document.getElementById('mileage').value;
+
+    if (
+      model || type || motormotorCapacity || motorTypes ||
+      color || condition || year || mileage
+    ) {
+      summaryContent.innerHTML = `
+              <strong>Model:</strong> ${model || '-'}<br>
+              <strong>Type:</strong> ${type || '-'}<br>
+              <strong>Engine Capacity:</strong> ${motormotorCapacity || '-'}<br>
+              <strong>Engine Type:</strong> ${motorTypes || '-'}<br>
+              <strong>Color:</strong> ${color || '-'}<br>
+              <strong>Condition:</strong> ${condition || '-'}<br>
+              <strong>Year:</strong> ${year || '-'}<br>
+              <strong>Mileage:</strong> ${mileage || '-'} km
+            `;
+    } else {
+      summaryContent.textContent = 'Please fill in the form to see vehicle summary';
+    }
+  }
+
+  form.addEventListener('input', updateSummary);
+  form.addEventListener('change', updateSummary);
+});
 
 
 // Navbar JavaScript Functionality
@@ -328,30 +366,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 document.getElementById('predictBtn').addEventListener('click', function () {
-    // Example payload (replace with your actual data)
-    const payload = {
-      model: vehicleForm.model.value,
-      type: vehicleForm.type.value,
-      condition: vehicleForm.condition.value,
-      motormotorCapacity: vehicleForm.motorCapacity.value,
-      motorTypes: vehicleForm.motorTypes.value,
-      color: vehicleForm.color.value,
-      year: vehicleForm.year.value,
-      mileage: vehicleForm.mileage.value
-    };
+  // Example payload (replace with your actual data)
+  const payload = {
+    model: vehicleForm.model.value,
+    type: vehicleForm.type.value,
+    condition: vehicleForm.condition.value,
+    motormotorCapacity: vehicleForm.motorCapacity.value,
+    motorTypes: vehicleForm.motorTypes.value,
+    color: vehicleForm.color.value,
+    year: vehicleForm.year.value,
+    mileage: vehicleForm.mileage.value
+  };
 
-    fetch('http://localhost:8000/predict', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    })
+  fetch('http://localhost:8000/predict', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
     .then(response => response.json())
     .then(res => {
       console.log('Data sent successfully', res);
       const predictedPrice = res.predicted_price ?? null;
-      
+
       // Example DOM update
       document.getElementById('predictedPriceDisplay').textContent =
         predictedPrice !== null ? `$${predictedPrice}` : 'No price returned';
@@ -363,4 +401,4 @@ document.getElementById('predictBtn').addEventListener('click', function () {
     .catch(err => {
       console.error('Error sending data', err);
     });
-  });
+});
